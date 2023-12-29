@@ -1,2 +1,3 @@
-# iot-manager
-IoT Manager is my full-stack JavaScript implementation for IoT - from sensor to cloud to human. 
+# IoT Manager
+
+IoT Manager is my full-stack JavaScript implementation for IoT - from sensor to cloud to human.

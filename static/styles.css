@@ -1,0 +1,32 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+.footer {
+  flex-shrink: 0;
+}
+
+.modal-header {
+  border-bottom: 0px solid #0dcaf0;
+}
+
+.modal-content {
+  border: 1px solid #0dcaf0;
+}
+.modal-footer {
+  border-top: 0px solid #0dcaf0;
+}
+
+.btn-close {
+  color: #0dcaf0;
+}
