@@ -15,8 +15,10 @@ IoT Manager extends the common PERN stack (PostgreSQL, Express, React/Redux, Nod
 - **Node Express Server**: A back-end server that provides an API for the web interface and IoT devices.
 - **IoT Gateway**: A central hub for IoT data that facilitates communication between devices and the web interface. This is part of the server.
 - **Embedded JavaScript**: Custom-tailored runtime environment for JavaScript that runs on IoT devices. This communicates with the IoT gateway on the server.
+- **React/Redux SPA Interface**: A single-page application (SPA) built with React and Redux provides a user-friendly interface for humans to interact with the IoT data. It offers real-time data visualization and device management capabilities.
 - **Lightweight TCP Messaging**: Efficient communication protocol for IoT devices.
 - **Real-time Data Streaming**: WebSocket support for real-time data streaming to web browsers.
+- **PostgreSQL Integration**: The server uses a PostgreSQL database for data persistence. This allows for long-term storage of IoT data, enabling historical data analysis and trend identification. The database also stores configuration and state information for the IoT devices.
 
 #### Software Architecture
 
