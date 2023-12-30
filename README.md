@@ -5,6 +5,7 @@
 [![IoT Manager Composite](/static/images/iot-manager-composite.png)](https://iotmanager.rev4labs.com/)
 
 <a href="https://iotmanager.rev4labs.com/" style="font-size: 20px; font-weight: bold;">Click Here to See Live Deployment of IoT Manager</a>
+
 This deployed demo is a "live" environment where all dashboard values are based on real-time data received from actual IoT devices running the code in this repo. The IoT devices are implemented using ESP32 microcontrollers and TMP36 temperature sensors. They are located locally at my home and connect to the Internet via a local Wi-Fi network. When first starting the client interface, it may take a few seconds for the IoT devices to check in with the server and begin sending data.
 
 ## Features
