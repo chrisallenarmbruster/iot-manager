@@ -6,6 +6,8 @@
 
 <a href="https://iotmanager.rev4labs.com/" style="font-size: 20px; font-weight: bold;">Click Here to See Live Deployment of IoT Manager</a>
 
+### [👆 Click Here to See Live Deployment of IoT Manager](https://iotmanager.rev4labs.com/)
+
 This deployed demo is a "live" environment where all dashboard values are based on real-time data received from actual IoT devices running the code in this repo. The IoT devices are implemented using ESP32 microcontrollers and TMP36 temperature sensors. They are located locally at my home and connect to the Internet via a local Wi-Fi network. When first starting the client interface, it may take a few seconds for the IoT devices to check in with the server and begin sending data.
 
 ## Features
@@ -212,7 +214,7 @@ Follow these steps to use the project:
 
 ## Engineers
 
-- [Chris Armbruster](https://github.com/chrisallenarmbruster)
+### [🧑 Chris Armbruster](https://github.com/chrisallenarmbruster)
 
 <br>
 
