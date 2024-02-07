@@ -12,11 +12,11 @@ This deployed demo is a "live" environment where all dashboard values are based 
 
 IoT Manager extends the common PERN stack (PostgreSQL, Express, React/Redux, Node.js) to incorporate IoT technologies running embedded JavaScript. Here's an overview of what you'll find in this project:
 
-- **Node Express Server**: A back-end server that provides an API for the web interface and IoT devices.
-- **IoT Gateway**: A central hub for IoT data that facilitates communication between devices and the web interface. This is part of the server.
-- **Embedded JavaScript**: Custom-tailored runtime environment for JavaScript that runs on IoT devices. This communicates with the IoT gateway on the server.
+- **Node Express Server**: A back-end server that provides an API for the web interface (HTTP protocol) and IoT devices (DCP protocol built on DCP library).
+- **IoT Gateway**: A central hub for IoT data that facilitates communication between devices and the web interface through the back-end server.
+- **Embedded JavaScript**: Custom-tailored runtime environment for JavaScript that runs on IoT devices. This communicates with the IoT gateway on the server using the DCP protocol.
 - **React/Redux SPA Interface**: A single-page application (SPA) built with React and Redux provides a user-friendly interface for humans to interact with the IoT data. It offers real-time data visualization and device management capabilities.
-- **Lightweight TCP Messaging**: Efficient communication protocol for IoT devices.
+- **Lightweight UDP & TCP Messaging**: Efficient communication protocol for IoT devices supporting both UDP and TCP transport layers. UDP allows for broadcasting messages to an entire subnet.
 - **Real-time Data Streaming**: WebSocket support for real-time data streaming to web browsers.
 - **PostgreSQL Integration**: The server uses a PostgreSQL database for data persistence. This allows for long-term storage of IoT data, enabling historical data analysis and trend identification. The database also stores configuration and state information for the IoT devices.
 
@@ -165,12 +165,13 @@ Follow these steps to install and run the project:
 
 5. **Set SSID, WiFI password, and server address in the IoT source code:**
 
-   In the `iot` directory, open the `main.js` file and set the `ssid`, `password`, and `serverAddress` variables to match your local network. The `serverAddress` is referring to the address of the machine running the server. This is the machine that the IoT devices will connect to.
+   In the `iot` directory, create a `secret.js` file and set your `WIFI-NETWORK_NAME` and `WIFI_PASSWORD` (see the secrets_sample.js ).
 
    ```javascript
-   const ssid = "YOUR_SSID";
-   const password = "YOUR_WIFI_PASSWORD";
-   const serverAddress = "YOUR_SERVER_ADDRESS";
+   export default {
+     WIFI_NETWORK_NAME: "YOUR_WIFI_SSID_OR_NETWORK_NAME",
+     WIFI_PASSWORD: "YOUR_WIFI_PASSWORD",
+   };
    ```
 
 6. **Build and flash the IoT file:**
@@ -200,7 +201,7 @@ Follow these steps to use the project:
 
 2. **Power up the flashed ESP32 devices:**
 
-   Ensure that your ESP32 devices are connected to power. They should automatically connect to the server and start sending data.
+   Ensure that your ESP32 devices are connected to power. They should automatically start broadcasting data to the subnet they are on.
 
 3. **Open the app in a web browser:**
 
