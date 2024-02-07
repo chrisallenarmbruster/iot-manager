@@ -1,13 +1,82 @@
 {
+  "build": {
+    "BUILD": "$(MODDABLE)/build",
+    "MODULES": "$(MODDABLE)/modules"
+  },
+  "config": {
+    "sntp": "pool.ntp.org"
+  },
+  "creation": {
+    "keys": {
+      "initial": 32,
+      "incremental": 32,
+      "name": 53,
+      "symbol": 3
+    },
+    "parser": {
+      "buffer": 1024,
+      "table": 17
+    },
+    "main": "main"
+  },
   "include": [
-    "$(MODDABLE)/examples/manifest_base.json",
-    "$(MODDABLE)/examples/manifest_net.json",
-    "$(MODDABLE)/examples/manifest_mod.json",
-    "$(MODULES)/network/http/manifest.json",
-    "$(MODULES)/pins/digital/manifest.json",
-    "$(MODULES)/pins/analog/manifest.json"
+    "$(MODDABLE)/modules/network/wifi/manifest.json",
+    "$(MODDABLE)/modules/pins/digital/manifest.json",
+    "$(MODDABLE)/modules/pins/analog/manifest.json"
   ],
   "modules": {
-    "*": ["./main"]
+    "*": [
+      "./main",
+      "$(MODDABLE)/modules/files/resource/*",
+      "$(MODDABLE)/modules/base/instrumentation/modInstrumentation"
+    ],
+    "wifi/connection": "./wificonnection",
+    "secrets": "./secrets",
+    "DCPRequest": "./DCPRequest",
+    "DCPResponse": "./DCPResponse",
+    "DCPNode": "./DCPNode",
+    "DCPJsonBody": "./DCPJsonBody",
+    "DCPUri": "./DCPUri"
+  },
+  "preload": ["wifi/connection", "secrets", "Resource"],
+  "strip": "*",
+  "typescript": {
+    "tsconfig": {
+      "compilerOptions": {
+        "types": ["$(MODDABLE)/xs/includes/xs", "$(MODDABLE)/typings/global"]
+      }
+    }
+  },
+  "platforms": {
+    "esp32": {
+      "include": "$(BUILD)/devices/esp32/manifest.json",
+      "modules": {
+        "*": [
+          "$(MODDABLE)/modules/network/socket/lwip/modLwipSafe",
+          "$(MODDABLE)/modules/network/socket/*",
+          "$(MODDABLE)/modules/network/socket/lwip/*",
+          "$(MODDABLE)/modules/network/net/net",
+          "$(MODDABLE)/modules/network/net/esp/*",
+          "$(MODDABLE)/modules/network/sntp/*"
+        ]
+      },
+      "preload": ["socket", "sntp", "net"]
+    },
+    "lin": {
+      "include": "$(BUILD_SIMULATOR)/manifest.json",
+      "modules": {
+        "*": [
+          "$(MODDABLE)/modules/network/socket/*",
+          "$(MODDABLE)/modules/network/socket/lin/*",
+          "$(MODDABLE)/modules/network/net/net",
+          "$(MODDABLE)/modules/network/net/lin/*",
+          "$(MODDABLE)/modules/network/sntp/*"
+        ]
+      },
+      "preload": ["socket", "sntp", "net"]
+    },
+    "...": {
+      "error": "manifest - unsupported platform"
+    }
   }
 }
