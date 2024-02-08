@@ -1,9 +1,9 @@
-import React from "react"
-import Container from "react-bootstrap/Container"
-import Image from "react-bootstrap/Image"
-import Table from "react-bootstrap/Table"
-import Row from "react-bootstrap/Row"
-import Col from "react-bootstrap/Col"
+import React from "react";
+import Container from "react-bootstrap/Container";
+import Image from "react-bootstrap/Image";
+import Table from "react-bootstrap/Table";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const About = () => {
   return (
@@ -16,7 +16,8 @@ const About = () => {
           starts with the common PERN stack (PostgreSQL, Express, React/Redux,
           Node.js) and adds a few more technologies to extend the stack to the
           Internet of Things. This includes embedded Javascript for the devices,
-          lightweight TCP messaging, an IoT gateway and web sockets for
+          a custom service implementing my DCP application layer protocol using
+          lightweight TCP and UDP messaging, an IoT gateway and web sockets for
           real-time data streaming to browsers. The result is a full-stack
           JavaScript implementation for IoT.
         </p>
@@ -134,7 +135,7 @@ const About = () => {
         </p>
       </Container>
     </Container>
-  )
-}
+  );
+};
 
-export default About
+export default About;

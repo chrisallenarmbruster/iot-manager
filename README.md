@@ -12,11 +12,11 @@ This deployed demo is a "live" environment where all dashboard values are based 
 
 IoT Manager extends the common PERN stack (PostgreSQL, Express, React/Redux, Node.js) to incorporate IoT technologies running embedded JavaScript. Here's an overview of what you'll find in this project:
 
-- **Node Express Server**: A back-end server that provides an API for the web interface and IoT devices.
-- **IoT Gateway**: A central hub for IoT data that facilitates communication between devices and the web interface. This is part of the server.
-- **Embedded JavaScript**: Custom-tailored runtime environment for JavaScript that runs on IoT devices. This communicates with the IoT gateway on the server.
+- **Node Express Server**: A back-end server that provides an API for the web interface (HTTP protocol) and IoT devices (DCP protocol built on DCP library; DCP = Device Control Protocol).
+- **IoT Gateway**: A central hub for IoT data that facilitates communication between devices and the web interface through the back-end server.
+- **Embedded JavaScript**: Custom-tailored runtime environment for JavaScript that runs on IoT devices. This communicates with the IoT gateway on the server using my DCP protocol.
 - **React/Redux SPA Interface**: A single-page application (SPA) built with React and Redux provides a user-friendly interface for humans to interact with the IoT data. It offers real-time data visualization and device management capabilities.
-- **Lightweight TCP Messaging**: Efficient communication protocol for IoT devices.
+- **Lightweight UDP & TCP Messaging**: Efficient communication protocol for IoT devices supporting both UDP and TCP transport layers. UDP allows for broadcasting messages to an entire subnet.
 - **Real-time Data Streaming**: WebSocket support for real-time data streaming to web browsers.
 - **PostgreSQL Integration**: The server uses a PostgreSQL database for data persistence. This allows for long-term storage of IoT data, enabling historical data analysis and trend identification. The database also stores configuration and state information for the IoT devices.
 
@@ -152,25 +152,32 @@ Follow these steps to install and run the project:
 
    - `PORT`: This is the port number on which your app will run. For example, if you set `PORT=3000`, you'll be able to access your app at `http://localhost:3000`.
 
+   - `DCP_LISTEN_PORT`: This is the port number on which your backend will listen for DCP messages coming from IoT nodes. Note that DCP's default port is 2500.
+
    - `DATABASE_URL`: This is the connection string for your PostgreSQL database. It should be in the format `postgresql://USER:PASSWORD@localhost:5432/iot-manager`, replacing `USER` and `PASSWORD` with your PostgreSQL username and password.
 
    Here's an example of what your `.env` file might look like:
 
    ```bash
    PORT=3000
+   DCP_LISTEN_PORT=2500
    DATABASE_URL=postgresql://USER:PASSWORD@localhost:5432/iot-manager
    ```
 
    Replace `USER` and `PASSWORD` with your actual PostgreSQL username and password.
 
-5. **Set SSID, WiFI password, and server address in the IoT source code:**
+5. **Set SSID, WiFI password, and other config parameters in the IoT source code:**
 
-   In the `iot` directory, open the `main.js` file and set the `ssid`, `password`, and `serverAddress` variables to match your local network. The `serverAddress` is referring to the address of the machine running the server. This is the machine that the IoT devices will connect to.
+   In the `iot` directory, create a `secrets.js` file and set your `WIFI-NETWORK_NAME`, `WIFI_PASSWORD` and other config parameters (see the secrets_sample.js ).
 
    ```javascript
-   const ssid = "YOUR_SSID";
-   const password = "YOUR_WIFI_PASSWORD";
-   const serverAddress = "YOUR_SERVER_ADDRESS";
+   export default {
+     WIFI_NETWORK_NAME: "YOUR_WIFI_SSID_OR_NETWORK_NAME",
+     WIFI_PASSWORD: "YOUR_WIFI_PASSWORD",
+     REQUEST_TRANSPORT_LAYER: "UDP", // or "TCP", "UDP" allows for broadcasting to an entire subnet
+     IOT_GATEWAY_ADDRESS: "192.168.1.255", // or your backend server's IP address
+     IOT_GATEWAY_PORT: 2500,
+   };
    ```
 
 6. **Build and flash the IoT file:**
@@ -200,7 +207,7 @@ Follow these steps to use the project:
 
 2. **Power up the flashed ESP32 devices:**
 
-   Ensure that your ESP32 devices are connected to power. They should automatically connect to the server and start sending data.
+   Ensure that your ESP32 devices are connected to power. They should automatically start broadcasting data to the subnet they are on.
 
 3. **Open the app in a web browser:**
 

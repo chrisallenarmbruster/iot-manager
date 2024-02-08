@@ -1,8 +1,9 @@
-const conn = require("./conn")
-const Device = require("./device")
+const conn = require("./conn");
+const Device = require("./device");
+const DeviceConfig = require("./deviceconfig");
 
 const { STRING, BOOLEAN, UUID, UUIDV4, DATE, ENUM, BIGINT, FLOAT } =
-  conn.Sequelize
+  conn.Sequelize;
 
 const Event = conn.define("event", {
   id: {
@@ -23,6 +24,14 @@ const Event = conn.define("event", {
     allowNull: true,
   },
   ip: {
+    type: STRING,
+    allowNull: true,
+  },
+  label: {
+    type: STRING,
+    allowNull: true,
+  },
+  location: {
     type: STRING,
     allowNull: true,
   },
@@ -59,7 +68,7 @@ const Event = conn.define("event", {
     allowNull: true,
   },
   time: { type: DATE, defaultValue: conn.Sequelize.NOW },
-})
+});
 
 Event.addHook("beforeCreate", async (event) => {
   const device = await Device.findOrCreate({
@@ -67,8 +76,15 @@ Event.addHook("beforeCreate", async (event) => {
       mac: event.mac,
     },
     defaults: { make: event.make, model: event.model },
-  })
-  event.deviceId = device[0].id
-})
+  });
+  event.deviceId = device[0].id;
 
-module.exports = Event
+  await DeviceConfig.findOrCreate({
+    where: {
+      deviceId: device[0].id,
+    },
+    defaults: { label: event.label, location: event.location },
+  });
+});
+
+module.exports = Event;
