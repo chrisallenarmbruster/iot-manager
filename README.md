@@ -12,9 +12,9 @@ This deployed demo is a "live" environment where all dashboard values are based 
 
 IoT Manager extends the common PERN stack (PostgreSQL, Express, React/Redux, Node.js) to incorporate IoT technologies running embedded JavaScript. Here's an overview of what you'll find in this project:
 
-- **Node Express Server**: A back-end server that provides an API for the web interface (HTTP protocol) and IoT devices (DCP protocol built on DCP library).
+- **Node Express Server**: A back-end server that provides an API for the web interface (HTTP protocol) and IoT devices (DCP protocol built on DCP library; DCP = Device Control Protocol).
 - **IoT Gateway**: A central hub for IoT data that facilitates communication between devices and the web interface through the back-end server.
-- **Embedded JavaScript**: Custom-tailored runtime environment for JavaScript that runs on IoT devices. This communicates with the IoT gateway on the server using the DCP protocol.
+- **Embedded JavaScript**: Custom-tailored runtime environment for JavaScript that runs on IoT devices. This communicates with the IoT gateway on the server using my DCP protocol.
 - **React/Redux SPA Interface**: A single-page application (SPA) built with React and Redux provides a user-friendly interface for humans to interact with the IoT data. It offers real-time data visualization and device management capabilities.
 - **Lightweight UDP & TCP Messaging**: Efficient communication protocol for IoT devices supporting both UDP and TCP transport layers. UDP allows for broadcasting messages to an entire subnet.
 - **Real-time Data Streaming**: WebSocket support for real-time data streaming to web browsers.
@@ -152,25 +152,31 @@ Follow these steps to install and run the project:
 
    - `PORT`: This is the port number on which your app will run. For example, if you set `PORT=3000`, you'll be able to access your app at `http://localhost:3000`.
 
+   - `DCP_LISTEN_PORT`: This is the port number on which your backend will listen for DCP messages coming from IoT nodes. Note that DCP's default port is 2500.
+
    - `DATABASE_URL`: This is the connection string for your PostgreSQL database. It should be in the format `postgresql://USER:PASSWORD@localhost:5432/iot-manager`, replacing `USER` and `PASSWORD` with your PostgreSQL username and password.
 
    Here's an example of what your `.env` file might look like:
 
    ```bash
    PORT=3000
+   DCP_LISTEN_PORT=2500
    DATABASE_URL=postgresql://USER:PASSWORD@localhost:5432/iot-manager
    ```
 
    Replace `USER` and `PASSWORD` with your actual PostgreSQL username and password.
 
-5. **Set SSID, WiFI password, and server address in the IoT source code:**
+5. **Set SSID, WiFI password, and other config parameters in the IoT source code:**
 
-   In the `iot` directory, create a `secret.js` file and set your `WIFI-NETWORK_NAME` and `WIFI_PASSWORD` (see the secrets_sample.js ).
+   In the `iot` directory, create a `secrets.js` file and set your `WIFI-NETWORK_NAME`, `WIFI_PASSWORD` and other config parameters (see the secrets_sample.js ).
 
    ```javascript
    export default {
      WIFI_NETWORK_NAME: "YOUR_WIFI_SSID_OR_NETWORK_NAME",
      WIFI_PASSWORD: "YOUR_WIFI_PASSWORD",
+     REQUEST_TRANSPORT_LAYER: "UDP", // or "TCP", "UDP" allows for broadcasting to an entire subnet
+     IOT_GATEWAY_ADDRESS: "192.168.1.255", // or your backend server's IP address
+     IOT_GATEWAY_PORT: 2500,
    };
    ```
 
