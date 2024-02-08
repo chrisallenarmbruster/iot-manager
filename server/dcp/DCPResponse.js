@@ -36,7 +36,6 @@ class DCPResponse {
         }
         this.body = JSON.stringify(body);
       } else {
-        console.log("body:", body);
         this.body = body;
       }
     }

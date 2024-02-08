@@ -1,12 +1,11 @@
+const dcpNode = require("./dcp/dcp").createNode("dcp-gateway");
 const express = require("express");
 const app = express();
-// const server = require("http").createServer(app)
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: "*" } });
 
-// const io = require("socket.io")(server)
 const path = require("path");
 const volleyball = require("volleyball");
 const { Device, Event } = require("./db");
@@ -45,10 +44,32 @@ app.use((err, req, res, next) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("user connected");
+  console.log("Browser WebSocket connected.");
   socket.on("disconnect", function () {
-    console.log("user disconnected");
+    console.log("Browser WebSocket disconnected.");
   });
+});
+
+dcpNode.listen(process.env.DCP_LISTEN_PORT || 2500, async (req, res) => {
+  let event = req.body.getEvents()[0];
+  const eventName = Object.keys(event)[0];
+  const formattedEvent = {
+    make: event[eventName].host.make,
+    model: event[eventName].host.model,
+    mac: event[eventName].host.mac,
+    ip: event[eventName].host.ip,
+    label: event[eventName].host.label,
+    location: event[eventName].host.location,
+    event: eventName,
+    property: event[eventName].objectPath,
+    floatvalue: event[eventName].floatvalue,
+    value: event[eventName].value,
+    valueunit: event[eventName].valueunit,
+  };
+  console.log("Received DCP Event Message:\n", event);
+  event = await Event.create({ ...formattedEvent });
+  io.emit("device event", event);
+  res.send(`${eventName} event received`);
 });
 
 module.exports = httpServer;
