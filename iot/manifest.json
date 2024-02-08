@@ -30,13 +30,13 @@
       "$(MODDABLE)/modules/files/resource/*",
       "$(MODDABLE)/modules/base/instrumentation/modInstrumentation"
     ],
-    "wifi/connection": "./wificonnection",
     "secrets": "./secrets",
+    "PersistentWiFi": "./PersistentWiFi",
+    "DCPNode": "./DCPNode",
     "DCPRequest": "./DCPRequest",
     "DCPResponse": "./DCPResponse",
-    "DCPNode": "./DCPNode",
-    "DCPJsonBody": "./DCPJsonBody",
-    "DCPUri": "./DCPUri"
+    "DCPUri": "./DCPUri",
+    "DCPJsonBody": "./DCPJsonBody"
   },
   "preload": ["wifi/connection", "secrets", "Resource"],
   "strip": "*",

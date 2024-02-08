@@ -34,7 +34,7 @@ function blink(on = true, speed = 1000) {
   }
 }
 
-class Connection extends WiFi {
+class PersistentWiFi extends WiFi {
   #options;
   #callback;
   #reconnect;
@@ -117,4 +117,4 @@ class Connection extends WiFi {
   }
 }
 
-export default Connection;
+export default PersistentWiFi;
