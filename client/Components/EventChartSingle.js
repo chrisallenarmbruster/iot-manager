@@ -1,7 +1,7 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import Button from "react-bootstrap/Button"
-import Modal from "react-bootstrap/Modal"
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,22 +11,22 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js"
-import { Line } from "react-chartjs-2"
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 
 export class EventChartSingle extends Component {
   constructor(props) {
-    super(props)
-    this.state = { show: false }
+    super(props);
+    this.state = { show: false };
   }
 
   handleShow = () => {
-    this.setState({ show: true })
-  }
+    this.setState({ show: true });
+  };
 
   handleClose = () => {
-    this.setState({ show: false })
-  }
+    this.setState({ show: false });
+  };
 
   render() {
     ChartJS.register(
@@ -37,7 +37,18 @@ export class EventChartSingle extends Component {
       Title,
       Tooltip,
       Legend
-    )
+    );
+
+    const eventValues = Array.isArray(this.props.device?.events)
+      ? this.props.device.events
+          .map((event) => parseFloat(event.value))
+          .reverse()
+      : [];
+
+    const minValue =
+      eventValues.length > 0 ? Math.floor(Math.min(...eventValues) - 5) : 0;
+    const maxValue =
+      eventValues.length > 0 ? Math.ceil(Math.max(...eventValues) + 5) : 0;
 
     const options = {
       responsive: true,
@@ -78,7 +89,8 @@ export class EventChartSingle extends Component {
             },
             color: "#0DCAF0",
           },
-          min: 65,
+          min: minValue,
+          max: maxValue,
           title: {
             display: true,
             text: "° Fahrenheit",
@@ -89,27 +101,27 @@ export class EventChartSingle extends Component {
           },
         },
       },
-    }
+    };
 
-    const labels = this.props.device?.events
-      ?.map((event) =>
-        new Date(event.time).toLocaleString("en-US", {}).slice(-11)
-      )
-      .reverse()
+    const labels = Array.isArray(this.props.device?.events)
+      ? this.props.device.events
+          .map((event) =>
+            new Date(event.time).toLocaleString("en-US", {}).slice(-11)
+          )
+          .reverse()
+      : [];
 
     const data = {
       labels,
       datasets: [
         {
           label: "Dataset 1",
-          data: this.props.device?.events
-            ?.map((event) => event.value)
-            .reverse(),
+          data: eventValues,
           borderColor: "#0DCAF0",
           backgroundColor: "rgba(255, 99, 132, 0.5)",
         },
       ],
-    }
+    };
 
     return (
       <>
@@ -144,13 +156,13 @@ export class EventChartSingle extends Component {
           </Modal.Footer>
         </Modal>
       </>
-    )
+    );
   }
 }
 
 const mapStateToProps = (state) => ({
   device: state.deviceSingle.data,
   isLoading: state.deviceSingle.isLoading,
-})
+});
 
-export default connect(mapStateToProps)(EventChartSingle)
+export default connect(mapStateToProps)(EventChartSingle);
