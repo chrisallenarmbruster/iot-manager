@@ -10,9 +10,9 @@ This deployed demo is a "live" environment where all dashboard values are based 
 
 ## Features
 
-IoT Manager extends the common PERN stack (PostgreSQL, Express, React/Redux, Node.js) to incorporate IoT technologies running embedded JavaScript. Here's an overview of what you'll find in this project:
+IoT Manager extends the common PERN stack (PostgreSQL, Express, React/Redux, Node.js) to incorporate IoT technologies running embedded JavaScript communicating through my [DCP or Device Control Protocol](https://dcp.rev4labs.com). Here's an overview of what you'll find in this project:
 
-- **Node Express Server**: A back-end server that provides an API for the web interface (HTTP protocol) and IoT devices ([DCP or Device Control Protocol](https://dcp.rev4labs.com)).
+- **Node Express Server**: A back-end server that provides an API for the web interface (HTTP protocol) and IoT devices ([DCP Protocol](https://dcp.rev4labs.com)).
 - **IoT Gateway**: A central hub for IoT data that facilitates communication between devices and the web interface through the back-end server.
 - **Embedded JavaScript**: Custom-tailored runtime environment for JavaScript that runs on IoT devices. This communicates with the IoT gateway on the server using my DCP protocol.
 - **React/Redux SPA Interface**: A single-page application (SPA) built with React and Redux provides a user-friendly interface for humans to interact with the IoT data. It offers real-time data visualization and device management capabilities.
