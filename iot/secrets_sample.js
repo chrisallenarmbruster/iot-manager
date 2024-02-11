@@ -7,4 +7,6 @@ export default {
   REQUEST_TRANSPORT_LAYER: "UDP", // Or "TCP" - this is the transport layer that the ESP32 will use to send requests
   IOT_GATEWAY_ADDRESS: "192.168.1.100", // IP address that the ESP32 will send requests to (if using UDP can broadcast to entire subnet, i.e. 192.168.1.255)
   IOT_GATEWAY_PORT: 2500, // Port that the ESP32 will send requests to
+  LABEL: "Awesome Label", // Label for the device
+  LOCATION: "Home", // Location of the device
 };

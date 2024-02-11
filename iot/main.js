@@ -63,8 +63,8 @@ function sendTemp(on = true) {
                 model: "ESP32-DevKitC-32",
                 mac: Net.get("MAC"),
                 ip: Net.get("IP"),
-                label: "Office",
-                location: "Home",
+                label: secrets.LABEL,
+                location: secrets.LOCATION,
                 data: {
                   objects: {
                     temperature_sensor_1: {
@@ -97,31 +97,34 @@ function sendTemp(on = true) {
 
         req.setBody(body);
 
-        trace(`Broadcasting Temperature Event:\n${body}\n`);
-
-        dcpNode.sendMessage(
-          req,
-          secrets.IOT_GATEWAY_ADDRESS,
-          secrets.IOT_GATEWAY_PORT,
-          req.protocol,
-          (res) => {
-            trace(
-              `\n\nReceived formatted DCP response:\n\n${res.getFormattedMessage()}`
-            );
-            trace(
-              `\n\nParsed into Response Object:\n${JSON.stringify(
-                res,
-                null,
-                2
-              )}`
-            );
-            trace(
-              `\n\nCalled response handler for transaction-id ${res.getHeader(
-                "TRANSACTION-ID"
-              )}...\n\n`
-            );
-          }
-        );
+        trace(`Attempting to broadcast Temperature Event:\n${body}\n`);
+        try {
+          dcpNode.sendMessage(
+            req,
+            secrets.IOT_GATEWAY_ADDRESS,
+            secrets.IOT_GATEWAY_PORT,
+            req.protocol,
+            (res) => {
+              trace(
+                `\n\nReceived formatted DCP response:\n\n${res.getFormattedMessage()}`
+              );
+              trace(
+                `\n\nParsed into Response Object:\n${JSON.stringify(
+                  res,
+                  null,
+                  2
+                )}`
+              );
+              trace(
+                `\n\nCalled response handler for transaction-id ${res.getHeader(
+                  "TRANSACTION-ID"
+                )}...\n\n`
+              );
+            }
+          );
+        } catch (err) {
+          trace(`Error broadcasting event: ${err}\n`);
+        }
       },
       5000,
       30000

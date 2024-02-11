@@ -71,8 +71,16 @@ export default class DCPNode {
     }
 
     if (protocol === "TCP") {
-      return await this._sendTCPMessage(message, targetIpAddress, targetPort);
-      // return;
+      try {
+        const response = await this._sendTCPMessage(
+          message,
+          targetIpAddress,
+          targetPort
+        );
+        return response;
+      } catch (error) {
+        throw error;
+      }
     } else if (protocol === "UDP") {
       return this._sendUDPMessage(message, targetIpAddress, targetPort);
     } else {
@@ -88,55 +96,73 @@ export default class DCPNode {
       let transactionId, handler;
 
       client.callback = (callbackMessage, value, etc) => {
-        switch (callbackMessage) {
-          case Socket.connected:
-            client.write(ArrayBuffer.fromString(formattedMessage));
-            if (!(message instanceof DCPRequest)) {
-              client.close();
-              resolve();
-            }
-            break;
-
-          case Socket.readable:
-            if (message instanceof DCPRequest) {
-              let data = client.read(String);
-
-              if (data.length > 0) {
+        try {
+          switch (callbackMessage) {
+            case Socket.connected:
+              try {
+                trace("Socket.connected.\n");
+                client.write(ArrayBuffer.fromString(formattedMessage));
+                if (!(message instanceof DCPRequest)) {
+                  client.close();
+                  resolve();
+                }
+              } catch (err) {
+                trace(`Error in TCP callback: ${err}\n`);
                 client.close();
-                try {
-                  const response = this._parseResponse(data, "TCP", null, null);
-                  transactionId = message.getHeader("TRANSACTION-ID");
-                  let handler =
-                    this.responseHandlers.get(transactionId) ||
-                    this.defaultResponseHandler;
+                reject(err);
+              }
+              break;
 
-                  let result = handler(response);
-                  if (result && typeof result.then === "function") {
-                    result
-                      .then(() => {
-                        if (this.responseHandlers.has(transactionId)) {
-                          this.responseHandlers.delete(transactionId);
-                        }
-                        resolve(response);
-                      })
-                      .catch((err) => {
-                        reject(err);
-                      });
-                  } else {
-                    resolve(response);
+            case Socket.readable:
+              trace("Socket.readable.\n");
+              if (message instanceof DCPRequest) {
+                let data = client.read(String);
+
+                if (data.length > 0) {
+                  client.close();
+                  try {
+                    const response = this._parseResponse(
+                      data,
+                      "TCP",
+                      null,
+                      null
+                    );
+                    transactionId = message.getHeader("TRANSACTION-ID");
+                    let handler =
+                      this.responseHandlers.get(transactionId) ||
+                      this.defaultResponseHandler;
+
+                    let result = handler(response);
+                    if (result && typeof result.then === "function") {
+                      result
+                        .then(() => {
+                          if (this.responseHandlers.has(transactionId)) {
+                            this.responseHandlers.delete(transactionId);
+                          }
+                          resolve(response);
+                        })
+                        .catch((err) => {
+                          reject(err);
+                        });
+                    } else {
+                      resolve(response);
+                    }
+                  } catch (err) {
+                    reject(err);
                   }
-                } catch (err) {
-                  reject(err);
                 }
               }
-            }
-            break;
+              break;
 
-          case Socket.error:
-            trace("TCP Error: " + value + "\n");
-            client.close();
-            reject(new Error("TCP Error: " + value));
-            break;
+            case Socket.error:
+              throw new Error(
+                "Socket.error in _sendTCPMessage method: " + value
+              );
+              break;
+          }
+        } catch (err) {
+          client.close();
+          reject(err);
         }
       };
     });
