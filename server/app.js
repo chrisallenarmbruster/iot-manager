@@ -51,25 +51,48 @@ io.on("connection", (socket) => {
 });
 
 dcpNode.listen(process.env.DCP_LISTEN_PORT || 2500, async (req, res) => {
-  let event = req.body.getEvents()[0];
-  const eventName = Object.keys(event)[0];
-  const formattedEvent = {
-    make: event[eventName].host.make,
-    model: event[eventName].host.model,
-    mac: event[eventName].host.mac,
-    ip: event[eventName].host.ip,
-    label: event[eventName].host.label,
-    location: event[eventName].host.location,
-    event: eventName,
-    property: event[eventName].objectPath,
-    floatvalue: event[eventName].floatvalue,
-    value: event[eventName].value,
-    valueunit: event[eventName].valueunit,
-  };
-  console.log("Received DCP Event Message:\n", event);
-  event = await Event.create({ ...formattedEvent });
-  io.emit("device event", event);
-  res.send(`${eventName} event received`);
+  try {
+    if (!req.body || typeof req.body.getEvents !== "function") {
+      throw new Error("Invalid request: No body or getEvents method not found");
+    }
+
+    const events = req.body.getEvents();
+
+    if (!Array.isArray(events) || events.length === 0) {
+      throw new Error("No events found in the request body");
+    }
+
+    let event = events[0];
+    const eventName = Object.keys(event)[0];
+
+    if (!event[eventName] || !event[eventName].host) {
+      throw new Error("Invalid event structure");
+    }
+
+    const formattedEvent = {
+      make: event[eventName].host.make,
+      model: event[eventName].host.model,
+      mac: event[eventName].host.mac,
+      ip: event[eventName].host.ip,
+      label: event[eventName].host.label,
+      location: event[eventName].host.location,
+      event: eventName,
+      property: event[eventName].objectPath,
+      floatvalue: event[eventName].floatvalue,
+      value: event[eventName].value,
+      valueunit: event[eventName].valueunit,
+    };
+
+    console.log("Received DCP Event Message:\n", event);
+
+    event = await Event.create({ ...formattedEvent });
+
+    io.emit("device event", event);
+
+    await res.send(`${eventName} event received`);
+  } catch (err) {
+    console.log("Error processing DCP request:", err);
+  }
 });
 
 module.exports = httpServer;
