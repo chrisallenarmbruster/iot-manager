@@ -2,3 +2,5 @@ QUIET=true
 PORT=3000
 DCP_LISTEN_PORT=2500
 DATABASE_URL="postgres://localhost/iot-manager"
+DOCKER_REGISTRY=awesome.registry.com
+DOCKER_IMAGE_NAME=iot-manager 
