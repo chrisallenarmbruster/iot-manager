@@ -6,7 +6,7 @@
 // 'docker buildx create --name mybuilder --driver docker-container --bootstrap' and then
 // 'docker buildx use mybuilder'
 
-const defaultVersion = "1.0.0"; // Set default version here
+const defaultVersion = "2.1.0"; // Set default version here
 
 require("dotenv").config();
 const { spawn } = require("child_process");
@@ -53,7 +53,7 @@ rl.question(
         }
         args.push(
           "--platform",
-          "linux/amd64,linux/arm64",
+          "linux/amd64,linux/arm64,linux/arm/v7",
           "-t",
           imageName,
           "."
@@ -71,7 +71,7 @@ rl.question(
           "buildx",
           "build",
           "--platform",
-          "linux/amd64,linux/arm64",
+          "linux/amd64,linux/arm64,linux/arm/v7",
           "-t",
           imageName,
           "--push",
