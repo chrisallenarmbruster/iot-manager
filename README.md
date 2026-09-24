@@ -146,7 +146,7 @@ Follow these steps to install and run the project:
 
 4. **Set up environment variables:**
 
-   Create a `.env` file in the root of your project directory or set environment variables accordingly. You can use the provided `envSample` file as a template. Fill in the variables with your own values.
+   Create a `.env` file in the root of your project directory or set environment variables accordingly. You can use the provided `.env.example` file as a template. Fill in the variables with your own values.
 
    This includes the following important variables:
 

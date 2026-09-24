@@ -6,3 +6,12 @@
  Dockerfile
  docker-compose.yml
  iot
+.env.*
+*.env
+**/.env
+**/.env.*
+**/*.env
+*.private.yaml
+*.swp
+*.swo
+*~
